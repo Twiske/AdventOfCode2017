@@ -1,19 +1,22 @@
 import fileinput
 import re
 import sys
+from itertools import combinations
 
 lines = fileinput.input(files=('input'))
 sum = 0
 
 
 for line in lines:
-    min = 1000000
-    max = 0
 
-    for value in list(map(int,line.split("\t"))):
-        max = value if value > max else max
-        min = value if value < min else min
-    sum+= max - min
+    intlist = list(map(int,line.split("\t")))
+    intlist = sorted(intlist, reverse=True)
+
+    for combo in combinations(intlist, 2):
+        if (combo[0] % combo[1] == 0):
+            sum += combo[0] / combo[1]
+            break;
+
 
 
 
