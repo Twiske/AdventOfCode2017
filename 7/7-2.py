@@ -18,12 +18,13 @@ parseRegex = re.compile('(.+) \((\d+)\)(?: -> )?(.+)?')
 
 nodes = {}
 
+#Recursively calculate the total weight of a node and all its sub nodes
 def calcWeight(name):
     sum = nodes[name].weight
-    print(nodes[name].children)
+    #print(nodes[name].children)
     for child in nodes[name].children:
-        addedWeight = nodes[child].weight
-        #addedWeight += calcWeight(child)
+        #addedWeight = nodes[child].weight
+        addedWeight = calcWeight(child)
         sum += addedWeight
 
     return sum
@@ -37,15 +38,17 @@ for line in lines:
         children = matches.group(3).split(", ")
     else:
         children = []
-    print(name + " " + weight + " " + str(children))
+    #print(name + " " + weight + " " + str(children))
 
     nodes[name] = Node(weight, children)
 
 for key, value in nodes.items():
     if value.children != []:
-        print(key)
-        for child in value.children:
-            print(calcWeight(child))
-        print()
+        weights = [calcWeight(x) for x in value.children]
+        if len(set(weights)) != 1:
+            print("Unbalance at : " + key)
+            print(weights)
+            print(value.children)
+            print([nodes[x].weight for x in value.children])
 
 
